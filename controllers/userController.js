@@ -43,3 +43,15 @@ exports.createUser = async (req, res) => {
     }
 }
 
+exports.deleteUser = async (req, res) => {
+    try {
+        const user = await models.users.findOne({where: {id: req.params.id}})
+        await S3.deleteImage(user.image)
+        await user.destroy()
+
+        res.json({}) 
+    } catch (error) {
+        console.log(error)
+        
+    }
+}
