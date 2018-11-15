@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk')
 const fs = require('fs')
-const fileType = require('file_type')
+const fileType = require('file-type')
 
 AWS.config.update({
     accessKeyId: process.env.AWS_SECRET_KEY_ID,
@@ -15,13 +15,13 @@ const S3 = new AWS.S3()
 async function uploadImage(image) {
     try {
         const buffer = fs.readFileSync(image)
-        const type = fileType(image)
+        const type = fileType(buffer)
         const params = {
             ACL : 'public-read',
             Body: buffer,
             Bucket: process.env.AWS_S3_BUCKET_NAME,
-            contentType: type.mime,
-            key: `${Date.now().toString()}.${type.ext}`
+            ContentType: type.mime,
+            Key: `${Date.now().toString()}.${type.ext}`
         }
 
         const data = await S3.upload(params).promise()
